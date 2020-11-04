@@ -1,0 +1,166 @@
+package javaProjects;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+public class TicTacToe {
+	
+	static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
+	static ArrayList<Integer> cpuPositions = new ArrayList<Integer>();
+
+	public static void main(String[] args) {
+		// 3 rows and 3 columns - 2d array
+		// we'll make chars
+		// We create the gameBoard here
+		// we use single quotes for chars
+		char[][] gameBoard = { {' ','|', ' ', '|', ' '},
+							   {'-','+', '-', '+', '-'},
+							   {' ','|', ' ', '|', ' '},
+							   {'-','+', '-', '+', '-'}, 
+							   {' ','|', ' ', '|', ' '} };
+	
+		printGameBoard(gameBoard);
+
+		
+		
+		
+		
+		while(true) {
+			Scanner scan = new Scanner(System.in); // importing a scanner
+			System.out.print("enter your placement (1-9): "); // asking for placement
+			int playerPos = scan.nextInt(); // scanning the user input and making it a variable
+			while(playerPositions.contains(playerPos) || cpuPositions.contains(playerPos)) {
+				System.out.println("Position taken! Enter a correct position");
+				playerPos  = scan.nextInt();
+			}
+				
+		
+			placePiece(gameBoard,playerPos,"Player"); // plays the players turn
+			
+			String result = checkWinner();
+			if(result.length()>0) {
+				System.out.println(result);
+				break;
+			}
+			
+			Random rand = new Random();
+			int cpuPos = rand.nextInt(9)+1;
+			while(cpuPositions.contains(cpuPos) || cpuPositions.contains(cpuPos)) {
+				cpuPos = rand.nextInt(9)+1;
+			}
+			
+			
+			placePiece(gameBoard,cpuPos,"Cpu");
+			
+			printGameBoard(gameBoard);
+			
+			result = checkWinner();
+			if(result.length()>0) {
+				System.out.println(result);
+				break;
+			}
+		}
+	}
+	// All this does it print the gameBoard.
+	public static void printGameBoard(char[][] gameBoard) {
+		for(char[] row: gameBoard) {
+			for(char c : row) {
+				System.out.print(c); 
+			}
+			System.out.println();
+		}
+		
+	
+	}
+	 // Places the X or the O on the gameBoard
+	public static void placePiece(char[][]gameBoard, int pos, String user){
+		char symbol = ' ';
+		if(user.equals("Player")) {
+			symbol = 'X';
+			playerPositions.add(pos);
+		}else if(user.equals("Cpu")) {
+			symbol = 'O';
+			cpuPositions.add(pos);
+		}
+		
+		switch(pos) {
+		// row then column in 2-d array
+			case 1:
+				gameBoard[0][0] = symbol;
+				break;
+			case 2:
+				gameBoard[0][2] = symbol;
+				break;
+			case 3:
+				gameBoard[0][4] = symbol;
+				break;
+			case 4:
+				gameBoard[2][0] = symbol;
+				break;
+			case 5:
+				gameBoard[2][2] = symbol;
+				break;
+			case 6:
+				gameBoard[2][4] = symbol;
+				break;
+			case 7:
+				gameBoard[4][0] = symbol;
+				break;
+			case 8:
+				gameBoard[4][2] = symbol;
+				break;
+			case 9:
+				gameBoard[4][4] = symbol;
+				break;
+			default:
+				break;
+		}
+
+		
+	}
+	
+	public static String checkWinner() {
+		
+		
+		List topRow = Arrays.asList(1,2,3);
+		List middleRow = Arrays.asList(4,5,6);
+		List bottomRow = Arrays.asList(7,8,9);
+		List topCol = Arrays.asList(1,4,7);
+		List middleCol = Arrays.asList(2,5,8);
+		List bottomCol = Arrays.asList(3,6,9);
+		List cross1 = Arrays.asList(1,5,7);
+		List cross2 = Arrays.asList(7,5,3);
+		
+		List<List> winning = new ArrayList<List>();
+		winning.add(topRow);
+		winning.add(middleRow);
+		winning.add(bottomRow);
+		winning.add(topCol);
+		winning.add(middleCol);
+		winning.add(bottomCol);
+		winning.add(cross1);
+		winning.add(cross2);
+		
+		for(List l: winning) {
+			if(playerPositions.containsAll(l)) {
+				return "Congratulations you won!";
+			}else if(cpuPositions.containsAll(l)) {
+				return "CPU Wins! Sorry: ";
+			}else if(playerPositions.size() + cpuPositions.size() == 9) {
+				return "CAT!";
+				
+			}
+		}
+		
+		return"";
+		
+	}
+	
+	}
+
+
+
+
